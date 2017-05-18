@@ -54,6 +54,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   end
 
   def redirect_if_authenticated
+    flash.discard
     redirect_to after_two_factor_success_path_for(resource) if is_fully_authenticated?
   end
 
