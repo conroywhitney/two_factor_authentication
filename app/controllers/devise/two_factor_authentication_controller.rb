@@ -2,7 +2,7 @@ require 'devise/version'
 
 class Devise::TwoFactorAuthenticationController < DeviseController
   prepend_before_action :authenticate_scope!
-  before_action :prepare_and_validate, :handle_two_factor_authentication
+  before_action :redirect_if_authenticated, :prepare_and_validate, :handle_two_factor_authentication
 
   def show
   end
@@ -28,6 +28,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
     set_remember_two_factor_cookie(resource)
 
     warden.session(resource_name)[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
+
     # For compatability with devise versions below v4.2.0
     # https://github.com/plataformatec/devise/commit/2044fffa25d781fcbaf090e7728b48b65c854ccb
     if respond_to?(:bypass_sign_in)
@@ -50,6 +51,11 @@ class Devise::TwoFactorAuthenticationController < DeviseController
           expires: expires_seconds.from_now
       }
     end
+  end
+
+  def redirect_if_authenticated
+    flash.discard
+    redirect_to after_two_factor_success_path_for(resource) if is_fully_authenticated?
   end
 
   def after_two_factor_success_path_for(resource)
