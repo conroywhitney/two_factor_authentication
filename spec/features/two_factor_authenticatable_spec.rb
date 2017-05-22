@@ -36,10 +36,6 @@ feature "User of two factor authentication" do
         fill_in 'code', with: SMSProvider.last_message.body
         click_button 'Submit'
 
-        within('.flash.notice') do
-          expect(page).to have_content('Two factor authentication successful.')
-        end
-
         expect(current_path).to eq root_path
       end
     end
