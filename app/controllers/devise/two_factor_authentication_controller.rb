@@ -5,7 +5,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   before_action :redirect_if_authenticated, :prepare_and_validate, :handle_two_factor_authentication
 
   def show
-    flash[:notice] = I18n.t('devise.two_factor_authentication.not_authenticated') if flash.blank?
+    flash.now[:notice] = I18n.t('devise.two_factor_authentication.not_authenticated') if flash.blank?
   end
 
   def update
